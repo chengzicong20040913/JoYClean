@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-
+    //implementation("androidx.compose.ui:ui:1.7.4") // 检查版本是否适配你的 Compose 版本
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
