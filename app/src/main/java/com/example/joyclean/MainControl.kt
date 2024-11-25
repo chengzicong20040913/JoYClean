@@ -9,7 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.rememberScrollState // 用于记住滚动状态
-
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 @Composable
 fun ThreeButtonsLayout() {
     var showDialog by remember { mutableStateOf(false) } // 控制对话框显示/隐藏
@@ -59,6 +60,14 @@ fun ThreeButtonsLayout() {
         horizontalAlignment = Alignment.CenterHorizontally // 水平居中对齐
     ) {
         //Title("欢迎使用JoYClean")
+        Image(
+            painter = painterResource(id = R.drawable.logo), // 替换为你的图片资源ID
+            contentDescription = "顶部图片",
+            modifier = Modifier
+                .fillMaxWidth() // 图片占满宽度
+                .height(150.dp) // 设置图片高度
+                .padding(bottom = 16.dp) // 图片底部外边距
+        )
         Button(
             onClick = { /* TODO: 跳转到设置页面 */ },
             modifier = Modifier
