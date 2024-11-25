@@ -15,5 +15,9 @@ fun AppNavGraph(navController: NavHostController) {
         composable("main") { MainPage(navController) }
         // 设置页面
         composable("settings") { SettingsPage(navController)}
+        //数据分析页面
+        composable("data_analyze"){AnalyzePage(navController)}
+        //帮助页面
+        composable("helper"){Helper(navController)}
     }
 }
