@@ -8,7 +8,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
 
 
+fun formatElapsedTime(elapsedSeconds: Int): String {
+    val hours = elapsedSeconds / 3600
+    val minutes = (elapsedSeconds % 3600) / 60
+    val seconds = elapsedSeconds % 60
 
+    // 格式化为 "小时:分钟:秒钟"
+    // 格式化为 "小时:分钟:秒钟"，分钟和秒钟保持两位
+    return String.format("%d:%02d:%02d", hours, minutes, seconds)
+}
 @Composable
 fun MainPage() {
     // 状态变量，用于存储用户输入
@@ -41,7 +49,7 @@ fun MainPage() {
         PageLayout_Column(
             backgroundColor= Background_color.tranparent,
             verticalArrangement = Layout.depart,
-            heightFraction = 1.0f
+            heightFraction = 0.95f
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -58,8 +66,9 @@ fun MainPage() {
                 )
             }
             if (isOn) {
+                val formattedTime = formatElapsedTime(elapsedSeconds)
                 Text(
-                    text = "已运行时间: ${elapsedSeconds}s",
+                    text = "已运行时间: ${formattedTime }",
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Title("广告屏蔽已开启")
@@ -67,8 +76,6 @@ fun MainPage() {
             else{
                 Title("广告屏蔽已关闭")
             }
-            // 添加 Spacer 来填充中间的空间
-            //Title("欢迎使用JoYClean")
             ThreeButtonsLayout()
         }
     }

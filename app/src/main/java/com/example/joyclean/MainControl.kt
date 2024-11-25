@@ -65,7 +65,7 @@ fun ThreeButtonsLayout() {
             contentDescription = "顶部图片",
             modifier = Modifier
                 .fillMaxWidth() // 图片占满宽度
-                .height(150.dp) // 设置图片高度
+                .height(100.dp) // 设置图片高度
                 .padding(bottom = 16.dp) // 图片底部外边距
         )
         Button(
