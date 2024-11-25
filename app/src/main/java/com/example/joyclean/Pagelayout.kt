@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import android.util.Log // 需要导入
 import androidx.compose.ui.platform.LocalLayoutDirection
 // 全局定义的布局工具类
 object Layout {
@@ -24,6 +25,7 @@ object Background_color{
     val tranparent = Color(0x00000000)
     val dim = Color.Gray
     val light = Color(0xFFB3E5FC)
+    val red =Color.Red
 }
 data class Padding(
     val start: Dp = 0.dp,
@@ -40,6 +42,8 @@ fun ExtractPaddingValues(): Padding {
     val topPadding = paddingValues.calculateTopPadding()
     val endPadding = paddingValues.calculateEndPadding(layoutDirection)
     val bottomPadding = paddingValues.calculateBottomPadding()
+    // 使用 Log 打印调试信息
+    Log.d("ExtractPaddingValues", "start: $startPadding, top: $topPadding, end: $endPadding, bottom: $bottomPadding")
     return Padding(
         start = startPadding,
         top = topPadding,
@@ -51,9 +55,9 @@ fun ExtractPaddingValues(): Padding {
 fun PageLayout_Column(
     verticalArrangement: Arrangement.Vertical = Arrangement.Center, // 默认居中
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally, // 默认居中
-    padding: Padding = Padding(16.dp,16.dp,16.dp,16.dp),
-    widthFraction: Float = 1f,// 控制宽度占比，默认填满父容器
-    heightFraction: Float = 1f,//控制高度占比，默认填满父容器
+    padding: Padding = Padding(0.dp, 0.dp, 0.dp, 0.dp), // 默认无内边距
+    widthFraction: Float = 1.0f,
+    heightFraction: Float = 1.0f,
     backgroundColor: Color = Color.Transparent,
     content: @Composable () -> Unit
 ) {
