@@ -3,6 +3,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text // Material Design 3
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Alignment
 
 
 
@@ -37,18 +40,23 @@ fun MainPage() {
         }
         PageLayout_Column(
             backgroundColor= Background_color.tranparent,
-            verticalArrangement = Layout.top,
+            verticalArrangement = Layout.depart,
             heightFraction = 1.0f
         ) {
-            Title("欢迎使用JoYClean")
-            ToggleCircle(
-                isOn = isOn,
-                onToggle = {
-                    toggleState(isOn) { newState ->
-                        isOn = newState // 更新状态
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Title("欢迎使用JoYClean")
+                ToggleCircle(
+                    isOn = isOn,
+                    onToggle = {
+                        toggleState(isOn) { newState ->
+                            isOn = newState // 更新状态
+                        }
                     }
-                }
-            )
+                )
+            }
             if (isOn) {
                 Text(
                     text = "已运行时间: ${elapsedSeconds}s",
@@ -59,6 +67,7 @@ fun MainPage() {
             else{
                 Title("广告屏蔽已关闭")
             }
+            // 添加 Spacer 来填充中间的空间
             //Title("欢迎使用JoYClean")
             ThreeButtonsLayout()
         }

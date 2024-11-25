@@ -19,6 +19,7 @@ object Layout {
     val centerW =Alignment.CenterHorizontally
     val left = Alignment.Start
     val right = Alignment.End
+    val depart = Arrangement.SpaceBetween
 }
 object Background_color{
     val base_color = Color(0xFFDFE5DC)
