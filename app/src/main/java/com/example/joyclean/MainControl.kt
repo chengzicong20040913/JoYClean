@@ -11,8 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.rememberScrollState // 用于记住滚动状态
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 @Composable
-fun ThreeButtonsLayout() {
+fun ThreeButtonsLayout(navController:NavController) {
     var showDialog by remember { mutableStateOf(false) } // 控制对话框显示/隐藏
 
     // 用来显示帮助对话框
@@ -69,7 +70,7 @@ fun ThreeButtonsLayout() {
                 .padding(bottom = 16.dp) // 图片底部外边距
         )
         Button(
-            onClick = { /* TODO: 跳转到设置页面 */ },
+            onClick = { navController.navigate("settings") },
             modifier = Modifier
                 .fillMaxWidth() // 按钮占满宽度
                 .padding(vertical = 4.dp) // 按钮上下间距

@@ -6,7 +6,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
-
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 fun formatElapsedTime(elapsedSeconds: Int): String {
     val hours = elapsedSeconds / 3600
@@ -18,7 +20,7 @@ fun formatElapsedTime(elapsedSeconds: Int): String {
     return String.format("%d:%02d:%02d", hours, minutes, seconds)
 }
 @Composable
-fun MainPage() {
+fun MainPage(navController: NavController) {
     // 状态变量，用于存储用户输入
     var isOn by remember { mutableStateOf(false) }
     var elapsedSeconds by remember { mutableStateOf(0) }
@@ -76,7 +78,7 @@ fun MainPage() {
             else{
                 Title("广告屏蔽已关闭")
             }
-            ThreeButtonsLayout()
+            ThreeButtonsLayout(navController)
         }
     }
 }

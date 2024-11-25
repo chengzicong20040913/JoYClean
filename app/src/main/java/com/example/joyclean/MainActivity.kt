@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.joyclean.ui.theme.JoYCleanTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Surface
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,8 +19,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JoYCleanTheme {
-                Box(modifier = Modifier.fillMaxSize()) { // 确保父容器占满屏幕
-                    MainPage()
+                Surface {
+                    val navController = rememberNavController()
+                    AppNavGraph(navController = navController) // 加载导航图
                 }
             }
         }
@@ -29,8 +32,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainPagePreview(){
     JoYCleanTheme {
-        Box(modifier = Modifier.fillMaxSize()) { // 确保父容器占满屏幕
-            MainPage()
+        Surface {
+            val navController = rememberNavController()
+            AppNavGraph(navController = navController) // 加载导航图
         }
     }
 }
