@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.navigation:navigation-compose:2.6.0-alpha01")
     val room_version = "2.5.0"
     implementation("androidx.room:room-runtime:$room_version")
