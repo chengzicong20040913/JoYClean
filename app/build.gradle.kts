@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt) // 添加 kapt 插件
 }
 
 android {
@@ -40,7 +41,11 @@ android {
 }
 
 dependencies {
-    //implementation("androidx.compose.ui:ui:1.7.4") // 检查版本是否适配你的 Compose 版本
+    val room_version = "2.5.0"
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt ("androidx.room:room-compiler:$room_version")
+    // room针对kotlin协程功能的扩展库
+    implementation("androidx.room:room-ktx:$room_version")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
