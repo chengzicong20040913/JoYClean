@@ -10,7 +10,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import android.util.Log // 需要导入
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.navigation.NavController
 // 全局定义的布局工具类
 object Layout {
     val centerV = Arrangement.Center
@@ -19,6 +25,7 @@ object Layout {
     val centerW =Alignment.CenterHorizontally
     val left = Alignment.Start
     val right = Alignment.End
+    val depart = Arrangement.SpaceBetween
 }
 object Background_color{
     val base_color = Color(0xFFDFE5DC)
@@ -42,8 +49,6 @@ fun ExtractPaddingValues(): Padding {
     val topPadding = paddingValues.calculateTopPadding()
     val endPadding = paddingValues.calculateEndPadding(layoutDirection)
     val bottomPadding = paddingValues.calculateBottomPadding()
-    // 使用 Log 打印调试信息
-    Log.d("ExtractPaddingValues", "start: $startPadding, top: $topPadding, end: $endPadding, bottom: $bottomPadding")
     return Padding(
         start = startPadding,
         top = topPadding,
@@ -108,5 +113,37 @@ fun PageLayout_Row(
         ) {
             content() // 动态内容
         }
+    }
+}
+@Composable
+fun TopBarWithBackButton(
+    title: String,
+    navController: NavController,
+    onBackClick: () -> Unit = { navController.navigate("main") } // 默认点击行为
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = onBackClick, // 返回按钮的点击行为
+            modifier = Modifier.size(48.dp) // 调整按钮区域大小
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "返回",
+                tint = Color.Black // 设置箭头颜色
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp)) // 图标和标题之间的间距
+
+        Text(
+            text = title,
+            modifier = Modifier.weight(1f),
+            color = Color.Black // 设置标题颜色
+        )
     }
 }

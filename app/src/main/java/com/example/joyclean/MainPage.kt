@@ -3,11 +3,24 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text // Material Design 3
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
+fun formatElapsedTime(elapsedSeconds: Int): String {
+    val hours = elapsedSeconds / 3600
+    val minutes = (elapsedSeconds % 3600) / 60
+    val seconds = elapsedSeconds % 60
 
-
+    // 格式化为 "小时:分钟:秒钟"
+    // 格式化为 "小时:分钟:秒钟"，分钟和秒钟保持两位
+    return String.format("%d:%02d:%02d", hours, minutes, seconds)
+}
 @Composable
-fun MainPage() {
+fun MainPage(navController: NavController) {
     // 状态变量，用于存储用户输入
     var isOn by remember { mutableStateOf(false) }
     var elapsedSeconds by remember { mutableStateOf(0) }
@@ -37,21 +50,27 @@ fun MainPage() {
         }
         PageLayout_Column(
             backgroundColor= Background_color.tranparent,
-            verticalArrangement = Layout.top,
-            heightFraction = 1.0f
+            verticalArrangement = Layout.depart,
+            heightFraction = 0.95f
         ) {
-            Title("欢迎使用JoYClean")
-            ToggleCircle(
-                isOn = isOn,
-                onToggle = {
-                    toggleState(isOn) { newState ->
-                        isOn = newState // 更新状态
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Title("欢迎使用JoYClean")
+                ToggleCircle(
+                    isOn = isOn,
+                    onToggle = {
+                        toggleState(isOn) { newState ->
+                            isOn = newState // 更新状态
+                        }
                     }
-                }
-            )
+                )
+            }
             if (isOn) {
+                val formattedTime = formatElapsedTime(elapsedSeconds)
                 Text(
-                    text = "已运行时间: ${elapsedSeconds}s",
+                    text = "已运行时间: ${formattedTime }",
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Title("广告屏蔽已开启")
@@ -59,8 +78,7 @@ fun MainPage() {
             else{
                 Title("广告屏蔽已关闭")
             }
-            //Title("欢迎使用JoYClean")
-            ThreeButtonsLayout()
+            ThreeButtonsLayout(navController)
         }
     }
 }

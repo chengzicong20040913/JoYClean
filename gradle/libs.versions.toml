@@ -2,6 +2,7 @@
 agp = "8.7.1"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
+hilt = "2.48"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -33,5 +34,5 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" } # 添加这一行
-kotlin-ksp = { id = "com.google.devtools.ksp",version.ref = "kotlin"}
+kotlin-ksp = { id = "com.google.devtools.ksp", version = "2.0.0-1.0.23" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
