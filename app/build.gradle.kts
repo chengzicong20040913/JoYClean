@@ -2,7 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.kapt) // 添加 kapt 插件
+    alias(libs.plugins.kotlin.ksp) // 添加 kapt 插件
+    alias(libs.plugins.hilt.android) // 添加 Hilt 插件
 }
 
 android {
@@ -41,11 +42,15 @@ android {
 }
 
 dependencies {
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.navigation:navigation-compose:2.6.0-alpha01")
-    val room_version = "2.5.0"
+    val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
-    kapt ("androidx.room:room-compiler:$room_version")
+    ksp ("androidx.room:room-compiler:$room_version")
     // room针对kotlin协程功能的扩展库
     implementation("androidx.room:room-ktx:$room_version")
     implementation(libs.androidx.core.ktx)

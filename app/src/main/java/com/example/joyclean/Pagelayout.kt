@@ -49,8 +49,6 @@ fun ExtractPaddingValues(): Padding {
     val topPadding = paddingValues.calculateTopPadding()
     val endPadding = paddingValues.calculateEndPadding(layoutDirection)
     val bottomPadding = paddingValues.calculateBottomPadding()
-    // 使用 Log 打印调试信息
-    Log.d("ExtractPaddingValues", "start: $startPadding, top: $topPadding, end: $endPadding, bottom: $bottomPadding")
     return Padding(
         start = startPadding,
         top = topPadding,
