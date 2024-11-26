@@ -79,6 +79,26 @@ class AppManager(private val context: Context) {
     }
 
     /**
+     * 异步获取某一个应用进程
+     */
+    fun getAppByNameAsync(appName: String, callback: (AppInfo?) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // 假设 `appDao` 有一个方法 `getAppByName` 可以获取单个应用
+                val appInfo = appDao.getAppByName(appName) // 查询数据库或数据源
+                withContext(Dispatchers.Main) {
+                    callback(appInfo) // 返回结果到主线程
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    callback(null) // 发生错误时返回 null
+                }
+            }
+        }
+    }
+
+    /**
      * 初始化，检查手机上还有没有软件名称
      * 没有在数据库中
      */
@@ -109,7 +129,15 @@ class AppManager(private val context: Context) {
             }
         }
     }
-
+    fun updateAppProxyStatus(packageName: String, isProxyEnabled: Boolean) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                appDao.updateAppProxyStatus(packageName, isProxyEnabled)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
     // Companion object to provide global access to the single instance
     companion object {
         @SuppressLint("StaticFieldLeak")

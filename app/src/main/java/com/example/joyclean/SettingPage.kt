@@ -6,25 +6,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
+
 import androidx.navigation.NavController
 import com.example.joyclean.database.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.*
-import androidx.compose.material3.*
+
 import androidx.compose.runtime.*
-import androidx.compose.foundation.lazy.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.asImageBitmap
-import android.graphics.BitmapFactory
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
+import com.example.joyclean.setting.*
 
 
 @Composable
@@ -32,10 +19,54 @@ fun SettingsPage(navController: NavController) {
     // 调用方法
     val context = LocalContext.current
     val appManager = AppManager.getInstance(context)
-    var appList by remember { mutableStateOf("") }
-    var lastAppList by remember { mutableStateOf("") }
-    val scrollState = rememberScrollState()
+    var appListDisable by remember { mutableStateOf<List<String>>(emptyList()) }
+    var appListEnable by remember { mutableStateOf<List<String>>(emptyList()) }
+    var iconListDisable: List<ByteArray?> by remember { mutableStateOf<List<ByteArray?>>(emptyList()) }
+    var iconListEnable: List<ByteArray?> by remember { mutableStateOf<List<ByteArray?>>(emptyList()) }
+    val seenAppNames = mutableSetOf<String>()
+    val refreshKey = remember { mutableIntStateOf(0) }
     appManager.checkDatabase()
+    // 加载数据
+    LaunchedEffect(refreshKey.value) {
+
+        appManager.getAppsWithProxyDisabledAsync { enabledApps ->
+            // 筛选出尚未处理的应用（通过 seenAppNames 去重）
+            val newApps = enabledApps.filter { it.appName !in seenAppNames }
+
+            // 筛选出图标不为 null 的应用
+            val filteredApps = newApps.filter { it.icon != null }
+
+            // 更新已见集合（确保应用唯一）
+            filteredApps.forEach { app -> seenAppNames.add(app.appName) }
+
+            // 构建一个 Map，以 appName 作为键，icon 作为值，去重
+            val appIconMap = (appListDisable.zip(iconListDisable) + filteredApps.map { it.appName to it.icon!! })
+                .toMap()
+
+            // 更新状态，确保去重
+            appListDisable = appIconMap.keys.toList()
+            iconListDisable = appIconMap.values.toList()
+        }
+        appManager.getAppsWithProxyEnabledAsync { enabledApps ->
+            // 筛选出尚未处理的应用（通过 seenAppNames 去重）
+            val newApps = enabledApps.filter { it.appName !in seenAppNames }
+
+            // 筛选出图标不为 null 的应用
+            val filteredApps = newApps.filter { it.icon != null }
+
+            // 更新已见集合（确保应用唯一）
+            filteredApps.forEach { app -> seenAppNames.add(app.appName) }
+
+            // 构建一个 Map，以 appName 作为键，icon 作为值，去重
+            val appIconMap = (appListEnable.zip(iconListDisable) + filteredApps.map { it.appName to it.icon!! })
+                .toMap()
+
+            // 更新状态，确保去重
+            appListEnable = appIconMap.keys.toList()
+            iconListEnable = appIconMap.values.toList()
+        }
+    }
+
     PageLayout_Column(
         backgroundColor= Background_color.base_color,
         padding = ExtractPaddingValues(),
@@ -45,74 +76,25 @@ fun SettingsPage(navController: NavController) {
 
         // 主体内容
         //通过数据库查询图标并显示
-        appManager.getAppsWithProxyDisabledAsync { enabledApps ->
-            val newAppList = enabledApps.joinToString(separator = "\n") { app -> app.appName }
-            if (newAppList != lastAppList) { // 检查是否发生了实际更新
-                lastAppList = newAppList
-                appList = newAppList
-            }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize() // 填满整个屏幕
-                .padding(16.dp) // 添加内边距
-                .verticalScroll(scrollState) // 允许垂直滚动
+        PageLayout_Column(
+            backgroundColor= Background_color.tranparent,
+            verticalArrangement = Layout.top,
+            horizontalAlignment = Layout.left,
+            heightFraction = 1.0f
         ) {
-            Text(
-                text = appList,
-                modifier = Modifier.padding(16.dp),
-                textAlign = TextAlign.Start
+            ShowEnable(
+                context = context,
+                appList = appListEnable,
+                iconList = iconListEnable,
+                refreshKey = refreshKey
+            )
+            ShowDisable(
+                context = context,
+                appList = appListDisable,
+                iconList = iconListDisable,
+                refreshKey = refreshKey
             )
         }
-    }
-}
-@Composable
-fun ProxyDisabledAppsScreen(appManager: AppManager) {
-    // 定义一个 State 保存应用数据
-    val appsState = remember { mutableStateOf<List<AppInfo>>(emptyList()) }
-
-    // 调用异步方法
-    LaunchedEffect(Unit) {
-        appManager.getAppsWithProxyDisabledAsync { disabledApps ->
-            appsState.value = disabledApps // 更新 State
-        }
-    }
-
-    // 显示应用列表
-    LazyColumn {
-        items(appsState.value) { app ->
-            AppItemView(app)
-        }
-    }
-}
-@Composable
-fun AppItemView(app: AppInfo) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // 显示图标
-        app.icon?.let { iconByteArray ->
-            val bitmap = BitmapFactory.decodeByteArray(iconByteArray, 0, iconByteArray.size)
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = "${app.appName} Icon",
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        // 显示应用名称
-        Text(
-            text = app.appName,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(start = 8.dp)
-        )
     }
 }
 

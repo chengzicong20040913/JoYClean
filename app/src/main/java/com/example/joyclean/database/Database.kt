@@ -10,15 +10,16 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.Base64
 import androidx.room.TypeConverter
 import java.io.ByteArrayOutputStream
+import android.util.Log
 
 @Entity(tableName = "App_info") // 建议修改表名为更直观的名字
 data class AppInfo(
     @PrimaryKey(autoGenerate = true) val id: Int = 0, // 自动生成的主键
-    val appName: String,                              // 应用名称
+    @ColumnInfo(name = "appName")val appName: String,                              // 应用名称
     @TypeConverters(Converters::class)
-    val icon: ByteArray?,                             //图标的存储
-    val count : Int=0,                                // 此应用内已经拦截的次数
-    val isProxyEnabled: Boolean                       // 是否启用代理
+    @ColumnInfo(name = "icon")val icon: ByteArray?,                             //图标的存储
+    @ColumnInfo(name = "count")val count : Int=0,                                // 此应用内已经拦截的次数
+    @ColumnInfo(name = "isProxyEnabled")val isProxyEnabled: Boolean                       // 是否启用代理
 )
 
 @Dao
@@ -46,6 +47,14 @@ interface AppDao {
     @Query("SELECT * FROM App_info WHERE isProxyEnabled = 0")
     fun getAppsWithProxyDisabled(): List<AppInfo>
 
+    //查询一个应用
+    @Query("SELECT * FROM App_info WHERE appName = :appName LIMIT 1")
+    fun getAppByName(appName: String): AppInfo?
+
+    //刷新应用状态
+    @Query("UPDATE App_info SET isProxyEnabled = :isProxyEnabled WHERE appName = :appName")
+    fun updateAppProxyStatus(appName: String, isProxyEnabled: Boolean)
+
 }
 
 @Database(version = 1, entities = [AppInfo::class], exportSchema = false)
@@ -67,31 +76,30 @@ class Converters {
 
     @TypeConverter
     fun fromDrawable(drawable: Drawable?): ByteArray? {
-        // 如果 drawable 为 null，直接返回 null
         if (drawable == null) return null
 
-        // 尝试将 Drawable 转换为 Bitmap
         return try {
             val bitmap = (drawable as BitmapDrawable).bitmap
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
             byteArrayOutputStream.toByteArray()
         } catch (e: Exception) {
-            e.printStackTrace()
-            null // 如果发生异常，返回 null
+            Log.e("Converters", "Error converting Drawable to ByteArray", e)
+            null
         }
     }
 
     @TypeConverter
-    fun toDrawable(byteArray: ByteArray?): Drawable? {
+    fun toDrawable(byteArray: ByteArray?, context: Context): Drawable? {
         if (byteArray == null) return null
 
         return try {
             val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-            BitmapDrawable(Resources.getSystem(), bitmap)
+            BitmapDrawable(context.resources, bitmap)
         } catch (e: Exception) {
-            e.printStackTrace()
-            null // 如果发生异常，返回 null
+            Log.e("Converters", "Error converting ByteArray to Drawable", e)
+            null
         }
     }
 }
+
