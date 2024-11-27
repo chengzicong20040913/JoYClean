@@ -120,7 +120,7 @@ fun alter(
     val appNames = selectedItems.value.toList() // 获取选中应用的名称列表
 
     if (appNames.isNotEmpty()) {
-            // 根据 Origin 执行不同的逻辑
+        // 根据 Origin 执行不同的逻辑
         appNames.forEach { appName ->
             appManager.getAppByNameAsync(appName) { appInfo ->
                 if (appInfo != null) {
@@ -150,6 +150,5 @@ fun updateProxyStatus(context: Context, appInfo: AppInfo, isProxyEnabled: Boolea
         }
     }
 }
-
 
 

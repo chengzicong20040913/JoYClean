@@ -26,10 +26,10 @@ fun ShowEnable(
     // 管理选中状态
     val selectedItems = remember { mutableStateOf<Set<String>>(emptySet()) }
     Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.4f) // 限制高度为页面的 40%
-            ){
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.4f) // 限制高度为页面的 40%
+    ){
         // 顶部蓝色条状结构
         Row(
             modifier = Modifier

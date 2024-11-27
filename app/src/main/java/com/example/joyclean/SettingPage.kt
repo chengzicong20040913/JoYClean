@@ -29,9 +29,9 @@ fun SettingsPage(navController: NavController) {
     // 加载数据
     LaunchedEffect(refreshKey.value) {
 
-        appManager.getAppsWithProxyDisabledAsync { enabledApps ->
+        appManager.getAppsWithProxyDisabledAsync { disabledApps ->
             // 筛选出尚未处理的应用（通过 seenAppNames 去重）
-            val newApps = enabledApps.filter { it.appName !in seenAppNames }
+            val newApps = disabledApps.filter { it.appName !in seenAppNames }
 
             // 筛选出图标不为 null 的应用
             val filteredApps = newApps.filter { it.icon != null }
@@ -58,7 +58,7 @@ fun SettingsPage(navController: NavController) {
             filteredApps.forEach { app -> seenAppNames.add(app.appName) }
 
             // 构建一个 Map，以 appName 作为键，icon 作为值，去重
-            val appIconMap = (appListEnable.zip(iconListDisable) + filteredApps.map { it.appName to it.icon!! })
+            val appIconMap = (appListEnable.zip(iconListEnable) + filteredApps.map { it.appName to it.icon!! })
                 .toMap()
 
             // 更新状态，确保去重
@@ -97,7 +97,6 @@ fun SettingsPage(navController: NavController) {
         }
     }
 }
-
 
 
 
