@@ -30,26 +30,29 @@ import kotlin.collections.toMap
 fun AppList(
     appList: List<String>,
     iconList: List<ByteArray?>,
-    selectedItems: MutableState<Set<String>>
+    selectedItems: MutableState<Set<String>>,
+    refreshKey: MutableState<Int>
 ) {
-    LazyColumn(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        itemsIndexed(appList) { index, appName ->
-            val isChecked = selectedItems.value.contains(appName)
+    key(refreshKey.value) {
+        LazyColumn(
+            modifier = Modifier.padding(16.dp),
+        ) {
+            itemsIndexed(appList) { index, appName ->
+                val isChecked = selectedItems.value.contains(appName)
 
-            AppItem(
-                appName = appName,
-                iconData = iconList.getOrNull(index), // 避免越界
-                isChecked = isChecked,
-                onCheckedChange = { checked ->
-                    selectedItems.value = if (checked) {
-                        selectedItems.value + appName // 添加到选中集合
-                    } else {
-                        selectedItems.value - appName // 从选中集合中移除
+                AppItem(
+                    appName = appName,
+                    iconData = iconList.getOrNull(index), // 避免越界
+                    isChecked = isChecked,
+                    onCheckedChange = { checked ->
+                        selectedItems.value = if (checked) {
+                            selectedItems.value + appName // 添加到选中集合
+                        } else {
+                            selectedItems.value - appName // 从选中集合中移除
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

@@ -64,6 +64,6 @@ fun ShowEnable(
         }
 
         // 下方的 AppList
-        AppList(appList = appList, iconList = iconList, selectedItems = selectedItems)
+        AppList(appList = appList, iconList = iconList, selectedItems = selectedItems,refreshKey=refreshKey)
     }
 }
