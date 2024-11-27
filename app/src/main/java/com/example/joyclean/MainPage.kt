@@ -7,8 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.joyclean.database.AppManager
 
 fun formatElapsedTime(elapsedSeconds: Int): String {
     val hours = elapsedSeconds / 3600
@@ -24,7 +26,7 @@ fun MainPage(navController: NavController) {
     // 状态变量，用于存储用户输入
     var isOn by remember { mutableStateOf(false) }
     var elapsedSeconds by remember { mutableStateOf(0) }
-
+    val context = LocalContext.current
     // 启动定时器
     TimerFlowEffect(isRunning = isOn) {
         elapsedSeconds++ // 每秒增加计时
@@ -61,7 +63,7 @@ fun MainPage(navController: NavController) {
                 ToggleCircle(
                     isOn = isOn,
                     onToggle = {
-                        toggleState(isOn) { newState ->
+                        toggleState(isOn,context) { newState ->
                             isOn = newState // 更新状态
                         }
                     }

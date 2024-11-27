@@ -1,4 +1,6 @@
 package com.example.joyclean
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
@@ -18,72 +20,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Dp
 import androidx.compose.material.icons.filled.ArrowDropDown
-fun calculateDuration(startTime: Long): String {
-    val currentTime = System.currentTimeMillis()
-    val elapsedMillis = currentTime - startTime
+import androidx.compose.ui.platform.LocalContext
+import com.example.joyclean.database.AppManager
+import android.app.Activity.* // 如果代码在 Activity 中运行需要导入
+import android.net.VpnService // 用于检查和启动 VPN 服务
+import com.example.joyclean.vpnservice.MyVpnService
 
-    val hours = (elapsedMillis / (1000 * 60 * 60)) % 24
-    val minutes = (elapsedMillis / (1000 * 60)) % 60
-    val seconds = (elapsedMillis / 1000) % 60
-
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
-}
-
-@Composable
-fun ArrowButtonComponent(
-    modifier: Modifier = Modifier,
-    text: String = "请点击下面的按钮",
-    size: Dp = 32.dp
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp), // 添加外边距
-        horizontalAlignment = Alignment.CenterHorizontally // 内容水平居中
-    ) {
-        // 显示文字
-        Text(
-            text = text,
-            style = MaterialTheme.typography.headlineSmall, // 使用主题中的样式
-            color = MaterialTheme.colorScheme.onBackground, // 文字颜色
-            modifier = Modifier.padding(bottom = 8.dp) // 与箭头的间距
-        )
-        // 显示向下箭头
-        Icon(
-            imageVector = Icons.Default.ArrowDropDown, // 向下箭头图标
-            contentDescription = "向下箭头",
-            tint = MaterialTheme.colorScheme.primary, // 箭头颜色
-            modifier = Modifier.size(size) // 箭头大小
-        )
-    }
-}
-@Composable
-fun ToggleCircleWithTime(
-    isOn: Boolean,
-    onToggle: () -> Unit,
-    duration: String // 显示已经开启的持续时间
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-    ) {
-        // 圆形按钮
-        ToggleCircle(isOn = isOn, onToggle = onToggle)
-
-        // 显示持续时间
-        if (isOn) {
-            Text(
-                text = "已开启时间: $duration",
-                fontSize = 16.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-    }
-}
 
 @Composable
 fun ToggleCircle(isOn: Boolean, onToggle: () -> Unit) {
@@ -110,13 +52,24 @@ fun ToggleCircle(isOn: Boolean, onToggle: () -> Unit) {
     }
 }
 
-fun toggleState(isOn: Boolean, updateState: (Boolean) -> Unit) {
-    if (isOn) {
-        /*TODO:填充关闭连接的逻辑*/
+
+fun toggleState(isOn: Boolean, context: Context, updateState: (Boolean) -> Unit) {
+    val appManager = AppManager.getInstance(context)
+
+    if (!isOn) {
+        // 打开 VPN 连接：启动 VPN 服务
+        val vpnIntent = Intent(context, MyVpnService::class.java)
+        // 启动 VPN 服务
+        context.startService(vpnIntent)
+    } else {
+        // 关闭 VPN 连接：停止 VPN 服务
+        val vpnIntent = Intent(context, MyVpnService::class.java)
+        // 停止 VPN 服务
+        context.stopService(vpnIntent)
     }
-    else {
-        /*TODO:填充打开连接的逻辑*/
-    }
-    val newState = !isOn // 取反状态
-    updateState(newState) // 通过回调传递新状态
+
+    // 切换状态：反转当前状态
+    val newState = !isOn
+    // 通过回调更新新的状态
+    updateState(newState)
 }
