@@ -52,7 +52,6 @@ fun ToggleCircle(isOn: Boolean, onToggle: () -> Unit) {
     }
 }
 
-
 fun toggleState(isOn: Boolean, context: Context, updateState: (Boolean) -> Unit) {
     val appManager = AppManager.getInstance(context)
 

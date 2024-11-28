@@ -22,19 +22,12 @@ fun formatElapsedTime(elapsedSeconds: Int): String {
     return String.format("%d:%02d:%02d", hours, minutes, seconds)
 }
 @Composable
-fun MainPage(navController: NavController) {
+fun MainPage(navController: NavController,viewModel: MainViewModel) {
     // 状态变量，用于存储用户输入
-    var isOn by remember { mutableStateOf(false) }
-    var elapsedSeconds by remember { mutableStateOf(0) }
+    val isOn by viewModel.isOn.collectAsState()
+    val elapsedSeconds by viewModel.elapsedSeconds.collectAsState()
     val context = LocalContext.current
-    // 启动定时器
-    TimerFlowEffect(isRunning = isOn) {
-        elapsedSeconds++ // 每秒增加计时
-    }
-    // 当 isOn 为 false，清零计时
-    if (!isOn) {
-        elapsedSeconds = 0
-    }
+
 
     PageLayout_Column(
         backgroundColor= Background_color.base_color,
@@ -63,9 +56,7 @@ fun MainPage(navController: NavController) {
                 ToggleCircle(
                     isOn = isOn,
                     onToggle = {
-                        toggleState(isOn,context) { newState ->
-                            isOn = newState // 更新状态
-                        }
+                        viewModel.toggleState(context=context)
                     }
                 )
             }
