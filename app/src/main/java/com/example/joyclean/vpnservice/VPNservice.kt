@@ -42,7 +42,7 @@ class MyVpnService : VpnService() {
                         // 处理数据包
                         handlePacket(buffer, length)
                         // 可以选择转发数据包
-                        //outputStream.write(buffer, 0, length)
+                        outputStream.write(buffer, 0, length)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
