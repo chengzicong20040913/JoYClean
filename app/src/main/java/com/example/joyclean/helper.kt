@@ -95,13 +95,19 @@ fun ScrollableTextContent() {
             style = MaterialTheme.typography.headlineSmall, // 小标题样式
             modifier = Modifier.padding(vertical = 8.dp) // 上下间距
         )
+        Image(
+            painter = painterResource(id = R.drawable.setting), // 替换为实际图片资源ID
+            contentDescription = "主界面图片",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(600.dp) // 控制图片高度
+        )
 
         Text(
             text = """
-                在设置界面中，您可以控制拦截防护的范围和强度，包括：
-                - 选择需要开启防护的软件。
-                - 调整广告拦截的灵敏度。
-            """.trimIndent(),
+                在设置界面中，您可以控制拦截防护的范围。按照图上的指示，对希望调整的应用进行勾选，就能选择是否对他开启拦截广告服务啦~
+                不过很遗憾的是，由于Room数据库缓存设定有点奇怪，每次对应用进行修改之后，尽管实际上的防护已经开启或者关闭，需要退出页面重新进入，图形页面才会正常显示~
+            """,
             modifier = Modifier.fillMaxWidth()
         )
 
