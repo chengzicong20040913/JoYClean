@@ -1,85 +1,135 @@
 package com.example.joyclean.vpnservice
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.VpnService
 import android.os.ParcelFileDescriptor
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.example.joyclean.MainActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import android.util.Log
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
+var isMyVpnServiceRunning by mutableStateOf(false)
+
 class MyVpnService : VpnService() {
-    private var vpnInterface: ParcelFileDescriptor? = null
-    private var isRunning = true
-    private var inputStream: FileInputStream? = null
-    private var outputStream: FileOutputStream? = null
-    private var trafficProcessingThread: Thread? = null
+
+    private val mConfigureIntent: PendingIntent by lazy {
+        var activityFlag = PendingIntent.FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            activityFlag += PendingIntent.FLAG_MUTABLE
+        }
+        PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), activityFlag)
+    }
+
+    private lateinit var vpnInterface: ParcelFileDescriptor
+
+    override fun onCreate() {
+        UdpSendWorker.start(this)
+        UdpReceiveWorker.start(this)
+        UdpSocketCleanWorker.start()
+        TcpWorker.start(this)
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // 配置 VPN 接口
-        val builder = Builder()
-        builder.setSession("MyVPN")
-            .addAddress("10.0.0.2", 24)
-            .addRoute("0.0.0.0", 0)
-            .setMtu(1500)
-        vpnInterface = builder.establish()
-
-        // 启动流量处理线程
-        vpnInterface?.let { startTrafficProcessing(it) }
-
-        return START_STICKY
-    }
-
-    private fun startTrafficProcessing(vpnInterface: ParcelFileDescriptor) {
-        val inputStream = FileInputStream(vpnInterface.fileDescriptor)
-        val outputStream = FileOutputStream(vpnInterface.fileDescriptor)
-        val bufferSize = 1024 * 1024
-        Thread {
-            val buffer = ByteArray(bufferSize) // 缓冲区大小
-            while (isRunning) {
-                try {
-                    // 从 TUN 接口读取数据包
-                    val length = inputStream.read(buffer)
-                    if (length > 0) {
-                        // 处理数据包
-                        handlePacket(buffer, length)
-                        // 可以选择转发数据包
-                        outputStream.write(buffer, 0, length)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    break
-                }
-            }
-        }.start()
-    }
-
-    private fun handlePacket(packet: ByteArray, length: Int) {
-        // 解析数据包
-        // 示例：输出数据包大小
-        Log.e("TAG", "Received packet of size: $length bytes")
-        /**
-         * 后面进入核心逻辑部分(过滤数据包)
-         */
-    }
-    private fun stopVpnInterface() {
-        // 停止虚拟网络接口并清理资源
-        try {
-            isRunning = false
-            trafficProcessingThread?.interrupt()  // 中断数据处理线程
-            trafficProcessingThread = null
-
-            inputStream?.close()  // 关闭输入流
-            outputStream?.close() // 关闭输出流
-            vpnInterface?.close() // 关闭虚拟接口
-
-        } catch (e: Exception) {
-            e.printStackTrace()
+        return if (intent?.action == ACTION_DISCONNECT) {
+            disconnect()
+            START_NOT_STICKY
+        } else {
+            connect()
+            START_STICKY
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
-        stopVpnInterface()  // 假设你有一个方法来停止虚拟接口
-        isRunning = false
-        vpnInterface?.close()
-        vpnInterface = null
+        disconnect()
+        UdpSendWorker.stop()
+        UdpReceiveWorker.stop()
+        UdpSocketCleanWorker.stop()
+        TcpWorker.stop()
+    }
+
+    private fun connect() {
+        vpnInterface = createVpnInterface()
+        val fileDescriptor = vpnInterface.fileDescriptor
+        ToNetworkQueueWorker.start(fileDescriptor)
+        ToDeviceQueueWorker.start(fileDescriptor)
+        isMyVpnServiceRunning = true
+    }
+
+    private fun disconnect() {
+        ToNetworkQueueWorker.stop()
+        ToDeviceQueueWorker.stop()
+        vpnInterface.close()
+        isMyVpnServiceRunning = false
+        stopForeground(true)
+        System.gc()
+    }
+
+
+    /**
+     * Android O及以上创建前台通知
+     */
+    @SuppressLint("ForegroundServiceType")
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun updateForegroundNotification(message: Int) {
+        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        mNotificationManager.createNotificationChannel(
+            NotificationChannel(
+                NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_ID,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+        )
+        startForeground(
+            1, Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setContentText(getString(message))
+                .setContentIntent(mConfigureIntent)
+                .build()
+        )
+    }
+
+    private fun createVpnInterface(): ParcelFileDescriptor {
+        return Builder()
+            .addAddress("10.0.0.2", 32)
+            .addRoute("0.0.0.0", 0)
+            .addDnsServer("114.114.114.114")
+            .setSession("VPN-Demo")
+            .setBlocking(true)
+            .setConfigureIntent(mConfigureIntent)
+            .also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    it.setMetered(false)
+                }
+            }
+            .establish() ?: throw IllegalStateException("无法初始化vpnInterface")
+    }
+
+    companion object {
+        /**
+         * 通知频道Id
+         */
+        const val NOTIFICATION_CHANNEL_ID = "VpnExample"
+
+        /**
+         * 动作：连接
+         */
+        const val ACTION_CONNECT = "studio.attect.demo.vpnservice.CONNECT"
+
+        /**
+         * 动作：断开连接
+         */
+        const val ACTION_DISCONNECT = "studio.attect.demo.vpnservice.DISCONNECT"
     }
 }

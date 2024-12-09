@@ -42,6 +42,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.activity:activity-ktx:1.6.0") // 或更高版本
+    implementation("androidx.activity:activity:1.6.0")    // 或更高版本
     implementation("androidx.compose.runtime:runtime-saveable:1.5.0")
     implementation("com.google.dagger:hilt-android:2.48")
     implementation(libs.androidx.navigation.runtime.ktx)
@@ -70,4 +72,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.core.ktx)
 }

@@ -6,8 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 @Composable
-fun AppNavGraph(navController: NavHostController) {
-    val viewModel: MainViewModel = MainViewModel()  // 获取 ViewModel 实例
+fun AppNavGraph(navController: NavHostController,viewModel: MainViewModel) {
+    //val viewModel: MainViewModel = MainViewModel()  // 获取 ViewModel 实例
     NavHost(
         navController = navController,
         startDestination = "main" // 默认起始页面
