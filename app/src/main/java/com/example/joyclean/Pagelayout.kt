@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.navigation.NavController
@@ -134,7 +135,7 @@ fun TopBarWithBackButton(
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "返回",
-                tint = Color.Black // 设置箭头颜色
+                tint = colorScheme.primary // 设置箭头颜色
             )
         }
 
@@ -143,7 +144,7 @@ fun TopBarWithBackButton(
         Text(
             text = title,
             modifier = Modifier.weight(1f),
-            color = Color.Black // 设置标题颜色
+            color = colorScheme.primary // 设置标题颜色
         )
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -30,7 +31,7 @@ fun MainPage(navController: NavController,viewModel: MainViewModel) {
 
 
     PageLayout_Column(
-        backgroundColor= Background_color.base_color,
+        backgroundColor= colorScheme.background,//Background_color.base_color,
         padding = ExtractPaddingValues(),
         verticalArrangement = Layout.top,
     )
@@ -39,14 +40,14 @@ fun MainPage(navController: NavController,viewModel: MainViewModel) {
             backgroundColor= Background_color.tranparent,
             verticalArrangement = Layout.top,
             horizontalAlignment = Layout.left,
-            heightFraction = 0.05f
+            heightFraction = 0.08f
         ) {
             Title("JoYClean")
         }
         PageLayout_Column(
             backgroundColor= Background_color.tranparent,
             verticalArrangement = Layout.depart,
-            heightFraction = 0.95f
+            heightFraction = 1.0f
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -2,6 +2,7 @@ package com.example.joyclean
 
 import android.graphics.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -68,7 +69,7 @@ fun SettingsPage(navController: NavController) {
     }
 
     PageLayout_Column(
-        backgroundColor= Background_color.base_color,
+        backgroundColor=  colorScheme.background,
         padding = ExtractPaddingValues(),
         verticalArrangement = Layout.top,
     ){

@@ -12,12 +12,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 // Material Design 3 的主题和排版
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Typography
 
 @Composable
 fun Helper(navController: NavController) {
     PageLayout_Column(
-        backgroundColor= Background_color.base_color,
+        backgroundColor= colorScheme.background,
         padding = ExtractPaddingValues(),
         verticalArrangement = Layout.top,
     ){

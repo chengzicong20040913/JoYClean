@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,7 +53,7 @@ fun AnalyzePage(navController: NavController) {
     }
 
     PageLayout_Column(
-        backgroundColor= Background_color.base_color,
+        backgroundColor= colorScheme.background,
         padding = ExtractPaddingValues(),
         verticalArrangement = Layout.top,
     ){

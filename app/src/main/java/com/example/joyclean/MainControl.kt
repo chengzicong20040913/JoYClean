@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState // 用于记住滚动状�
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import androidx.compose.material3.MaterialTheme.colorScheme
 @Composable
 fun ThreeButtonsLayout(navController:NavController) {
 
@@ -33,6 +34,9 @@ fun ThreeButtonsLayout(navController:NavController) {
         )
         Button(
             onClick = { navController.navigate("settings") },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorScheme.primary, // 按钮背景颜色
+            ),
             modifier = Modifier
                 .fillMaxWidth() // 按钮占满宽度
                 .padding(vertical = 4.dp) // 按钮上下间距
@@ -41,6 +45,9 @@ fun ThreeButtonsLayout(navController:NavController) {
         }
         Button(
             onClick = { navController.navigate("helper") },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorScheme.primary, // 按钮背景颜色
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
@@ -49,6 +56,9 @@ fun ThreeButtonsLayout(navController:NavController) {
         }
         Button(
             onClick = { navController.navigate("data_analyze")},
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorScheme.primary, // 按钮背景颜色
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
