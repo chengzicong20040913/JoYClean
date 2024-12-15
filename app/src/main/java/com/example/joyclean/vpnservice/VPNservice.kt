@@ -104,7 +104,7 @@ class MyVpnService : VpnService() {
         return Builder()
             .addAddress("10.0.0.2", 32)
             .addRoute("0.0.0.0", 0)
-            .addDnsServer("114.114.114.114")
+            .addDnsServer("94.140.14.14")
             .setSession("VPN-Demo")
             .setBlocking(true)
             .setConfigureIntent(mConfigureIntent)
@@ -125,11 +125,11 @@ class MyVpnService : VpnService() {
         /**
          * 动作：连接
          */
-        const val ACTION_CONNECT = "studio.attect.demo.vpnservice.CONNECT"
+        const val ACTION_CONNECT = "com.example.joyclean.vpnservice.CONNECT"
 
         /**
          * 动作：断开连接
          */
-        const val ACTION_DISCONNECT = "studio.attect.demo.vpnservice.DISCONNECT"
+        const val ACTION_DISCONNECT = "com.example.joyclean.vpnservice.DISCONNECT"
     }
 }
