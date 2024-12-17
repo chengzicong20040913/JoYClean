@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.android.skip.ui.main.MainActivity
+import android. util. Log
 
 var isMyVpnServiceRunning by mutableStateOf(false)
 class MyVpnService : VpnService() {

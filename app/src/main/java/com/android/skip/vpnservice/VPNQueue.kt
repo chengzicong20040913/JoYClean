@@ -532,8 +532,8 @@ object TcpWorker : Runnable {
                 pipeMap[ipAndPort] ?: throw IllegalStateException("pipeMap中不应存在null key:$ipAndPort")
             }
             /*TODO 在屏幕上打印packet.ip4Header.destinationAddress,就是弹出提示框*/
-            Log.e("TAG","TCP_Recive"+packet.ip4Header.destinationAddress.toString())
-            if(packet.ip4Header.destinationAddress.toString()=="111.13.149.108")continue
+            //Log.e("TAG","TCP_Recive"+packet.ip4Header.destinationAddress.toString())
+            //if(packet.ip4Header.destinationAddress.toString()=="111.13.149.108")continue
             handlePacket(packet, tcpPipe)
         }
     }

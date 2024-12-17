@@ -86,7 +86,6 @@ class MainActivity : AppCompatActivity() {
         vpnPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 // 用户授权了 VPN 权限，启动 VPN 服务
-                vpnIntent.putExtra("DNS", DNSIP)
                 startVpnService(vpnIntent)
                 Toast.makeText(this, "VPN 已开启", Toast.LENGTH_SHORT).show()
             } else {
@@ -101,6 +100,7 @@ class MainActivity : AppCompatActivity() {
             LaunchedEffect(vpnPermissionRequired) {
                 if (vpnPermissionRequired) {
                     // 请求 VPN 权限并启动服务
+                    vpnIntent.putExtra("DNS", DNSIP)
                     requestVpnPermissionAndStart(vpnIntent)
                     count_+=1
                 } else if(count_!=0) {
