@@ -1,34 +1,34 @@
 pluginManagement {
     repositories {
-        maven {
-            url = uri("https://maven.aliyun.com/nexus/content/repositories/google/")
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        maven {
-            url = uri("https://maven.aliyun.com/nexus/content/groups/public/")
-        }
+        maven { setUrl("https://mirrors.huaweicloud.com/repository/maven/")}
+        maven { setUrl("https://maven.aliyun.com/repository/central") }
+        maven { setUrl("https://maven.aliyun.com/repository/jcenter") }
+        maven { setUrl("https://maven.aliyun.com/repository/google") }
+        maven { setUrl("https://maven.aliyun.com/repository/gradle-plugin") }
+        maven { setUrl("https://maven.aliyun.com/repository/public") }
+        maven { setUrl("https://jitpack.io") }
+
         google()
-        gradlePluginPortal()  // 保留默认的Gradle插件门户
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven {
-            url = uri("https://maven.aliyun.com/nexus/content/repositories/google/")
-        }
-        maven {
-            url = uri("https://maven.aliyun.com/nexus/content/groups/public/")
-        }
-        google()  // 使用官方Google仓库
-        mavenCentral()  // 使用官方Maven Central仓库
+        maven { setUrl("https://mirrors.huaweicloud.com/repository/maven/")}
+        maven { setUrl("https://maven.aliyun.com/repository/central") }
+        maven { setUrl("https://maven.aliyun.com/repository/jcenter") }
+        maven { setUrl("https://maven.aliyun.com/repository/google") }
+        maven { setUrl("https://maven.aliyun.com/repository/gradle-plugin") }
+        maven { setUrl("https://maven.aliyun.com/repository/public") }
+        maven { setUrl("https://jitpack.io") }
+
+        google()
+        mavenCentral()
     }
 }
-rootProject.name = "JoYClean"
+
+rootProject.name = "SKIP"
 include(":app")
- 

@@ -1,0 +1,42 @@
+{
+  "name": "skip",
+  "version": "1.0.0",
+  "description": "![GitHub](https://img.shields.io/github/license/GuoXiCheng/SKIP) ![GitHub all releases](https://img.shields.io/github/downloads/GuoXiCheng/SKIP/total) ![GitHub Repo stars](https://img.shields.io/github/stars/GuoXiCheng/SKIP)",
+  "main": "index.js",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "release-file": "ts-node scripts/index.ts --func=release-file --apkPath=apk --releasePath=docs/.vitepress/dist",
+    "yaml-check": "ts-node ./scripts/yaml-check.ts",
+    "test": "jest --coverage"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@codemirror/lang-yaml": "^6.1.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@types/crypto-js": "^4.2.2",
+    "@types/jest": "^29.5.12",
+    "@types/js-yaml": "^4.0.9",
+    "autoprefixer": "^10.4.20",
+    "codemirror": "^6.0.1",
+    "crypto-js": "^4.2.0",
+    "element-plus": "^2.8.0",
+    "idb": "^8.0.0",
+    "jest": "^29.7.0",
+    "js-yaml": "^4.1.0",
+    "jszip": "^3.10.1",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "ts-jest": "^29.2.3",
+    "ts-node": "^10.9.2",
+    "vitepress": "^1.3.1",
+    "vitepress-plugin-mermaid": "^2.0.16",
+    "vue-codemirror6": "^1.3.4",
+    "zod": "^3.23.8"
+  },
+  "dependencies": {
+    "skip": "file:"
+  }
+}

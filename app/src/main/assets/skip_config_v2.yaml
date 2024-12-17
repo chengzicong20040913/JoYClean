@@ -1,0 +1,145 @@
+# 酷安
+- packageName: com.coolapk.market
+  skipIds:
+    - id: com.byted.pangle.m:id/tt_splash_skip_btn
+  # skipBounds:
+  #   - bound: 926,113,1036,223
+  #     resolution: 1080,2287
+
+# 京东阅读
+- packageName: com.jd.app.reader
+  skipIds:
+    - id: com.jd.app.reader:id/mJumpBtn
+    - id: com.jd.app.reader:id/count_down_time
+    - id: com.byted.pangle:id/tt_splash_skip_btn
+
+# 铁路12306
+- packageName: com.MobileTicket
+  skipIds:
+    - id: com.MobileTicket:id/tv_skip
+
+# 爱奇艺
+- packageName: com.qiyi.video
+  skipTexts:
+    - text: 关闭
+
+# 爱奇艺极速版
+- packageName: com.qiyi.video.lite
+  skipTexts:
+    - text: 关闭
+
+# 腾讯微云
+- packageName: com.qq.qcloud
+  skipIds:
+    - id: com.qq.qcloud:id/gdt_ad_text
+  skipBounds:
+    - bound: 1223,196,1384,308
+      resolution: 1440,3024
+
+# CSDN
+- packageName: net.csdn.csdnplus
+  skipIds:
+    - id: com.byted.pangle.m:id/tt_splash_skip_btn
+  skipBounds:
+    - bound: 1244,176,1384,316
+      resolution: 1440,3024
+
+# 小度
+- packageName: com.baidu.duer.superapp
+  skipIds:
+    - id: com.byted.pangle:id/tt_splash_skip_btn
+
+# VIVO 应用商店, 跳过开屏应用推荐
+- packageName: com.bbk.appstore
+  skipTexts:
+    - text: 进入首页
+      length: 5
+  skipIds:
+    - id: com.bbk.appstore:id/vbutton_title
+
+# 民生银行
+- packageName: cn.com.cmbc.newmbank
+  skipIds:
+    - id: cn.com.cmbc.newmbank:id/view_count_down
+
+# 菜鸟
+- packageName: com.cainiao.wireless
+  skipIds:
+    - id: com.cainiao.wireless:id/tt_splash_skip_btn
+
+# 人人视频专业版
+- packageName: com.example.pptv
+  skipIds:
+    - id: com.example.pptv:id/view_count_shake
+
+# 虎扑
+- packageName: com.hupu.games
+  skipIds:
+    - id: com.byted.pangle:id/tt_splash_skip_btn
+    - id: com.hupu.games:id/tv_time
+  skipBounds:
+    - bound: 912,156,1032,276
+      resolution: 1080,2308
+
+# 华为自带时钟跳过法定节假日误触
+- packageName: com.android.deskclock
+  skipTexts:
+    - length: 0
+
+# 小米音乐
+- packageName: com.miui.player
+  skipTexts:
+    - text: 跳过
+      length: 4
+
+# 华尔街见闻
+- packageName: com.wallstreetcn.news
+  skipIds:
+    - id: com.wallstreetcn.news:id/iv_jump
+
+# 荣耀自带时钟
+- packageName: com.hihonor.deskclock
+  skipTexts:
+    - length: 0
+
+# 前程无忧51job
+- packageName: com.job.android
+  skipIds:
+    - id: com.job.android:id/skipBtn
+
+# 今日头条
+- packageName: com.ss.android.article.news
+  skipTexts:
+    - text: 跳过
+      length: 4
+
+# 嘀嗒出行
+- packageName: com.didapinche.booking
+  skipTexts:
+    - text: 跳过
+      length: 2
+
+# 大麦
+- packageName: cn.damai
+  skipIds:
+    - id: cn.damai:id/homepage_advert_pb
+
+# Cellular-Z
+- packageName: make.more.r2d2.cellular_z
+  skipBounds:
+    - bound: 926,113,1036,223
+      resolution: 1080,2287
+
+# 生日助手
+- packageName: cn.sleepycoder.birthday
+  skipIds:
+    - id: com.byted.pangle.m:id/tt_splash_skip_btn
+  skipBounds:
+    - bound: 926,182,1036,292
+      resolution: 1080,2287
+
+# 工时记
+- packageName: cn.weilaihongtech.gongshi
+  skipBounds:
+    - bound: 945,158,1060,273
+      resolution: 1080,2287

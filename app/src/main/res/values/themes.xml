@@ -1,5 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.SKIP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- 浅色主题时使用的颜色 -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+    </style>
 
-    <style name="Theme.JoYClean" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
