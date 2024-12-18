@@ -57,6 +57,8 @@ import com.android.skip.ui.vpn.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.input.TextFieldValue
 import android.util.Log
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 
 @AndroidEntryPoint
@@ -96,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         }
         setContent {
             val vpnPermissionRequired = viewModel.vpnPermissionRequired.collectAsState().value
-
+            val scrollState = rememberScrollState()
             // 使用 LaunchedEffect 监听 vpnPermissionRequired 的变化
             LaunchedEffect(vpnPermissionRequired) {
                 if (vpnPermissionRequired) {
@@ -114,6 +116,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
+                        .verticalScroll(scrollState)
                         .padding(vertical = 64.dp, horizontal = 32.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {

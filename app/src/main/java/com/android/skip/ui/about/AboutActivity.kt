@@ -125,17 +125,6 @@ fun AboutDocs(onClick: () -> Unit) {
 }
 @Composable
 fun HelpDetail() {
-    /*
-    AndroidView(
-        factory = { context ->
-            WebView(context).apply {
-                webViewClient = WebViewClient()
-                settings.javaScriptEnabled = true
-                loadUrl(url)
-            }
-        },
-        modifier = Modifier.fillMaxSize()
-    )*/
     val scrollState = rememberScrollState() // 创建滚动状态
     Column(
         modifier = Modifier
