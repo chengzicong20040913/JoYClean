@@ -1,15 +1,18 @@
 package com.android.skip.vpnservice
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.VpnService
 import android.os.Build
 import android.util.Base64
 import android.util.Log
+import com.android.skip.MyApp.Companion.context
 import com.android.skip.vpnservice.protocol.IpUtil
 import com.android.skip.vpnservice.protocol.Packet
 import com.android.skip.vpnservice.protocol.Packet.TCPHeader
 import com.android.skip.vpnservice.protocol.TCBStatus
 import kotlinx.coroutines.*
+import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -233,7 +236,6 @@ object UdpSendWorker : Runnable {
     override fun run() {
         while (!thread.isInterrupted) {
             val packet = deviceToNetworkUDPQueue.take()
-
             val destinationAddress = packet.ip4Header.destinationAddress
             val udpHeader = packet.udpHeader
 
@@ -309,6 +311,10 @@ object UdpReceiveWorker : Runnable {
      */
     private lateinit var thread: Thread
 
+    private var regexListString: MutableList<String> = MutableList(36) { "" }
+
+    private var regexListRegex:MutableList<Regex?> = MutableList(36) { null }
+
     private var vpnService: VpnService? = null
 
     private var ipId = AtomicInteger()
@@ -321,10 +327,62 @@ object UdpReceiveWorker : Runnable {
             name = TAG
             start()
         }
+        GlobalScope.launch {
+            loadDomainsAndCreateRegexByFirstCharacterAsync(vpnService, "OISD.txt").await()
+            for (index in 0..35){
+                regexListRegex[index] = getRegexForIndexAsync(index).await()
+            }
+        }
     }
 
     fun stop() {
         thread.interrupt()
+    }
+
+    fun loadDomainsAndCreateRegexByFirstCharacterAsync(context: Context, filePath: String): Deferred<Unit> = GlobalScope.async {
+        try {
+            // 读取文件内容并按行分割
+            val inputStream = context.assets.open(filePath)
+            val domains = inputStream.bufferedReader().readLines()
+
+            // 遍历所有域名，根据第一个字符分类
+            domains.forEach { domain ->
+                // 获取第一个字符
+                val firstChar = domain.firstOrNull()
+
+                // 如果第一个字符是字母或者数字
+                val index = when {
+                    firstChar in '0'..'9' -> firstChar?.minus('0') ?: null // 直接使用 minus 减去字符
+                    firstChar in 'a'..'z' -> firstChar?.minus('a')?.plus(10) ?:null // a-z 对应 10-35
+                    firstChar in 'A'..'Z' -> firstChar?.lowercaseChar()?.minus('a')?.plus(10) ?:null // A-Z 转小写
+                    else -> null
+                }
+
+                // 如果索引合法，生成正则并添加到对应的位置
+                if (index != null && index in 0..35) {
+                    val regexPart = "^([a-zA-Z0-9-]+\\.)*${domain.replace(".", "\\.")}$"
+
+                    // 在对应位置追加正则表达式并用 | 连接
+                    if (regexListString[index].isNotEmpty()) {
+                        regexListString[index] += "|$regexPart"
+                    } else {
+                        regexListString[index] = regexPart
+                    }
+                }
+            }
+
+        } catch (e: Exception) {
+            println("Error loading domains and creating regexes: ${e.message}")
+        }
+    }
+
+    // 例子：通过索引检索相应的正则表达式
+    fun getRegexForIndexAsync(index: Int): Deferred<Regex?> = GlobalScope.async {
+        return@async if (index in 0..35) {
+            Regex(regexListString[index]) // 异步创建 Regex
+        } else {
+            null
+        }
     }
 
     private fun sendUdpPacket(tunnel: UdpTunnel, source: InetSocketAddress, data: ByteArray) {
@@ -338,6 +396,65 @@ object UdpReceiveWorker : Runnable {
         packet.updateUDPBuffer(byteBuffer, data.size)
         byteBuffer.position(UDP_HEADER_FULL_SIZE + data.size)
         networkToDeviceQueue.offer(byteBuffer)
+    }
+    // 判断是否为 DNS 请求
+    private fun isDnsRequest(data: ByteArray): Boolean {
+        // DNS 请求通常使用 53 端口，且以 DNS 请求头部开始
+        return data.size >= 12 && (data[2].toInt() shl 8 or data[3].toInt() and 0xFF) and 0x8000 == 0
+    }
+
+    fun extractDomainName(data: ByteArray): String? {
+        val domainName = StringBuilder()
+        var index = 12  // DNS 请求头部的偏移量，跳过 Transaction ID、Flags、Questions 等字段
+
+        // 获取问题部分的数量
+        val questionCount = (data[4].toInt() shl 8 or data[5].toInt()) // Questions 字段
+        if (questionCount == 0) return null  // 如果没有问题部分，返回 null
+
+        // 遍历每个查询问题部分（通常只会有一个）
+        for (i in 0 until questionCount) {
+            while (index < data.size) {
+                val length = data[index].toInt()  // 获取标签长度
+                if (length == 0) {  // 标签长度为 0 表示域名结束
+                    index++
+                    break
+                }
+
+                // 解析标签
+                val label = String(data, index + 1, length)
+                domainName.append(label).append(".")
+
+                // 移动索引到下一个标签的位置
+                index += length + 1
+            }
+        }
+
+        // 去掉最后一个多余的点
+        if (domainName.isNotEmpty()) {
+            domainName.deleteCharAt(domainName.length - 1)
+        }
+
+        return domainName.toString()
+    }
+    fun matchWithRegex(index: Int, testString: String): Boolean {
+        val regex = regexListRegex[index] // 获取对应的 Regex 对象
+        return regex?.matches(testString) == true // 使用 matches() 方法进行匹配
+    }
+    // 处理 DNS 请求
+    private fun handleDnsRequest(data: ByteArray): Boolean {
+        // 此处可以添加对 DNS 请求的处理代码，解析请求并生成响应
+        // 比如解析域名，判断查询类型等
+        val domain = extractDomainName(data)
+
+        if (domain!=null) {
+            for(index in 0..35){
+                if(matchWithRegex(index,domain))return true
+            }
+            return false
+        }
+        else {
+            return false
+        }
     }
 
     override fun run() {
@@ -369,7 +486,13 @@ object UdpReceiveWorker : Runnable {
                         receiveBuffer.flip()
                         val data = ByteArray(receiveBuffer.remaining())
                         receiveBuffer.get(data)
-                        sendUdpPacket(tunnel, inputChannel.socket().localSocketAddress as InetSocketAddress, data) //todo api 21->24
+                        if (!isDnsRequest(data) || !handleDnsRequest(data)) {
+                            sendUdpPacket(
+                                tunnel,
+                                inputChannel.socket().localSocketAddress as InetSocketAddress,
+                                data
+                            ) //todo api 21->24
+                        }
                     }.exceptionOrNull()?.let {
                         it.printStackTrace()
                         synchronized(udpSocketMap) {
@@ -673,7 +796,6 @@ object TcpWorker : Runnable {
         byteBuffer.position(TCP_HEADER_SIZE)
         /*TODO start debug*/
         // 启动协程并异步执行这两行代码
-        //Log.e("TAG","ACK_TCP"+tcpPipe.destinationAddress.toString())
         // 使主线程等待协程完成，可以使用 delay 来模拟等待或 `join()` 等待协程
         /*TODO end debug*/
         data?.let {

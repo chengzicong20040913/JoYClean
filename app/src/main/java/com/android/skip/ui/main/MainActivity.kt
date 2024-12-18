@@ -56,6 +56,7 @@ import androidx. compose. material3.*
 import com.android.skip.ui.vpn.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.input.TextFieldValue
+import android.util.Log
 
 
 @AndroidEntryPoint
@@ -291,6 +292,7 @@ fun IPsetting(onClick: () -> Unit, onIpReceived: (String) -> Unit) {
 fun IPDialog(onDismiss: () -> Unit, onIpReceived: (String) -> Unit) {
     var ipText by remember { mutableStateOf(TextFieldValue("")) }  // 用于存储用户输入的 DNS IP
     AlertDialog(
+
         onDismissRequest = { onDismiss() },
         title = {
             Text("请输入DNS服务器IP")
