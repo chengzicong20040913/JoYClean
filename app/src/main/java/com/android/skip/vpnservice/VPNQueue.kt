@@ -436,9 +436,25 @@ object UdpReceiveWorker : Runnable {
 
         return domainName.toString()
     }
-    fun matchWithRegex(index: Int, testString: String): Boolean {
-        val regex = regexListRegex[index] // 获取对应的 Regex 对象
-        return regex?.matches(testString) == true // 使用 matches() 方法进行匹配
+
+    fun matchUrl(url: String): Boolean {
+        // 先检查缓存
+        cache[url]?.let {
+            return it
+        }
+        for (regex in regexListRegex) {
+            regex?.let {
+                if (it.matches(url)) {
+                    // 如果匹配成功，保存到缓存中
+                    cache[url] = true
+                    return true
+                }
+            }
+        }
+
+        // 如果没有匹配，保存到缓存中
+        cache[url] = false
+        return false
     }
     // 处理 DNS 请求
     private fun handleDnsRequest(data: ByteArray): Boolean {
@@ -447,14 +463,9 @@ object UdpReceiveWorker : Runnable {
         val domain = extractDomainName(data)
 
         if (domain!=null) {
-            for(index in 0..35){
-                if(matchWithRegex(index,domain))return true
-            }
-            return false
+            return matchUrl(domain)
         }
-        else {
-            return false
-        }
+        return false
     }
 
     override fun run() {
