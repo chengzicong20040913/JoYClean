@@ -2,8 +2,8 @@
 layout: home
 
 hero:
-  name: SKIP
-  text: 基于安卓无障碍服务的自动跳过开屏广告 App
+  name: JoYClean
+  text: 基于安卓广告屏蔽服务
   image:
     src: /images/logo.png
   actions:
@@ -12,5 +12,5 @@ hero:
       link: /guide/intro/what-is-skip
     - theme: alt
       text: View on GitHub
-      link: https://github.com/GuoXiCheng/SKIP
+      link: https://github.com/chengzicong20040913/JoYClean.git
 ---
