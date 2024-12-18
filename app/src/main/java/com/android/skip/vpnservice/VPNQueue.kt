@@ -437,15 +437,15 @@ object UdpReceiveWorker : Runnable {
         return domainName.toString()
     }
 
-    fun matchUrl(url: String): Boolean {
+    fun matchUrl(url: String,index: List<Int>): Boolean {
         // 先检查缓存
         cache[url]?.let {
             return it
         }
-        for (regex in regexListRegex) {
-            regex?.let {
-                if (it.matches(url)) {
-                    // 如果匹配成功，保存到缓存中
+        for (i in index) {
+            regexListRegex.getOrNull(i)?.let { regex ->
+                if (regex.matches(url)) {
+                    // 如果匹配成功，缓存并返回 true
                     cache[url] = true
                     return true
                 }
@@ -456,16 +456,33 @@ object UdpReceiveWorker : Runnable {
         cache[url] = false
         return false
     }
+    private fun charToInt(c: Char): Int {
+        return when {
+            c.isDigit() -> c - '0'  // 将 '0'-'9' 映射到 0-9
+            c.isLowerCase() -> c - 'a' + 10  // 将 'a'-'z' 映射到 10-35
+            else -> throw IllegalArgumentException("Invalid character: $c")
+        }
+    }
+    private fun mapDomainPartsToNumbers(domain: String): List<Int> {
+        // 拆分域名，提取每个部分的第一个字符并映射到数字
+        return domain.split(".").map { part ->
+            if (part.isNotEmpty()) {
+                // 取每个部分的第一个字符并映射
+                charToInt(part.first())
+            } else {
+                throw IllegalArgumentException("Domain part is empty")
+            }
+        }
+    }
     // 处理 DNS 请求
     private fun handleDnsRequest(data: ByteArray): Boolean {
         // 此处可以添加对 DNS 请求的处理代码，解析请求并生成响应
         // 比如解析域名，判断查询类型等
         val domain = extractDomainName(data)
+        if(domain==null)return false
+        val mapped = mapDomainPartsToNumbers(domain.toString())
+        return matchUrl(domain,mapped)
 
-        if (domain!=null) {
-            return matchUrl(domain)
-        }
-        return false
     }
 
     override fun run() {
