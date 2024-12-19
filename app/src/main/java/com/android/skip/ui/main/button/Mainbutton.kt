@@ -16,7 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.sp
+import androidx. compose. ui. input. pointer. pointerInput
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 val stopcolor =Color(0xFF808080)
 val startcolor=Color(0xFF1E4377)
@@ -26,13 +31,14 @@ fun ToggleCircle(isOn: Boolean, onToggle: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth(0.8f) // 宽度占页面宽度的 80%
             .aspectRatio(1.0f)   // 高度与宽度保持 1:1，形成正方形
-            .clickable { onToggle() }, // 点击事件触发外部提供的切换函数
+            .clip(CircleShape)
+            .clickable { onToggle() },
         shape = CircleShape, // 使用圆形形状
         color = if (isOn) startcolor else stopcolor // 默认文字颜色为白色
     ) {
         Box(
             contentAlignment = Alignment.Center, // 确保内容居中
-            modifier = Modifier.fillMaxSize() // 让 Box 填满 Surface
+            modifier = Modifier.wrapContentSize()
         ) {
             // 显示按钮状态文字
             Text(
