@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,6 +45,14 @@ import com.android.skip.ui.webview.WebViewActivity
 import com.android.skip.util.DataStoreUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
 
 @AndroidEntryPoint
 class AboutActivity : AppCompatActivity() {
@@ -134,25 +143,29 @@ fun HelpDetail() {
     ) {
         // 显示标题文本
         Text(
-            text = "欢迎使用JoYClean！",
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append("欢迎使用 JoYClean \uD83E\uDD73")
+                }
+            },
             style = MaterialTheme.typography.headlineLarge, // 使用大标题样式
-            color=MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp) // 添加底部间距
         )
-        // 插入图片
-        Image(
-            painter = painterResource(id = R.drawable.imagelogo), // 替换为实际图片资源ID
-            contentDescription = "主界面图片",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp) // 控制图片高度
-        )
+//        // 插入图片
+//        Image(
+//            painter = painterResource(id = R.drawable.imagelogo), // 替换为实际图片资源ID
+//            contentDescription = "主界面图片",
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(60.dp) // 控制图片高度
+//        )
         Text(
             text = """
-                JoYClean是由JYC团队研发的基于流量分析的强力广告拦
-                截软件，只要点击屏幕，即刻告别广告烦恼！现在就由我来告诉你这个软件要怎么使用喵！
+                JoYClean 是由 JYC Studio 团队研发的基于流量分析的强力广告拦截软件，只要点击屏幕，即刻告别广告烦恼！现在就由我来告诉你这个软件要怎么使用喵！
             """.trimIndent(),
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth()
@@ -168,32 +181,114 @@ fun HelpDetail() {
             modifier = Modifier.padding(vertical = 8.dp) // 上下间距
 
         )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.mainpage1), // 替换为实际图片资源ID
+                contentDescription = "开启模拟点击3",
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.mainpage2), // 替换为实际图片资源ID
+                contentDescription = "开启模拟点击4",
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp)
+            )
+        }
 
         Text(
             text = """
-                主界面如下图所示：
-                - 最大的按钮是开关按钮：点击此按钮可开启或关闭广告拦截防护功能。
-                - 设置按钮：点击进入设置界面，您可以自定义广告拦截的力度并选择开启防护的软件。
-                - 数据分析按钮：点击进入数据分析界面，查看在各个软件中拦截的广告流量数据。
+                
+                主界面如上图所示，界面上有下面这些按钮：
+                
+                （1）流量屏蔽开关：点击此按钮可开启或关闭基于流量分析的广告拦截功能，开启后按钮下会显示已运行时间。
+                
+                （2）模拟点击开关：点击此按钮可开启或关闭基于模拟点击的广告拦截功能，其中开启功能时需要在设置中开启该应用的无障碍服务权限。
+                
+                （3）应用白名单：点击进入应用白名单页面，可以自主设置对哪些应用不开启模拟点击广告屏蔽功能。
+                
+                （4）设置：点击进入设置界面，您可以对软件的一些功能进行自定义。
+                
+                （5）DNS IP配置：点击后可以在文本框内输入您自主选择的DNS服务器，提升软件基于流量分析的广告拦截效果。
+                
+                （6）帮助：进入当前您所在的帮助页面
             """.trimIndent(),
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth()
         )
-        Image(
-            painter = painterResource(id = R.drawable.xpage), // 替换为实际图片资源ID
-            contentDescription = "主界面图片",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(600.dp) // 控制图片高度
-        )
 
         // 设置界面标题
         Text(
-            text = "2. 设置界面",
+            text = "2. 开启模拟点击屏蔽",
             style = MaterialTheme.typography.headlineSmall, // 小标题样式
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(vertical = 8.dp) // 上下间距
         )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp), // 整体布局的边距
+        ) {
+            // 第一行
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.autoclick1), // 替换为实际图片资源ID
+                    contentDescription = "开启模拟点击1",
+                    modifier = Modifier
+                        .weight(1f) // 让图片在行内平分宽度
+                        .padding(end = 8.dp, bottom = 16.dp) // 两张图片之间的间距
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.autoclick2), // 替换为实际图片资源ID
+                    contentDescription = "开启模拟点击2",
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp, bottom = 16.dp)
+                )
+            }
+            // 第二行
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.autoclick3), // 替换为实际图片资源ID
+                    contentDescription = "开启模拟点击3",
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.autoclick4), // 替换为实际图片资源ID
+                    contentDescription = "开启模拟点击4",
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
+                )
+            }
+        }
+
+        Text(
+            text = """
+                在主页面点击模拟点击开关后，您的设备会自动跳转到系统设置的无障碍页面，您只需要按照上面图片的示意，依次点击页面底部的“已安装的服务”、JoYClean、开启按钮，勾选“我已知风险”后开启，然后您就可以享受 JoYClean 基于模拟点击快速跳过软件开屏广告的便捷功能。
+            """.trimIndent(),
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // 数据分析界面标题
+        Text(
+            text = "3. 设置界面",
+            style = MaterialTheme.typography.headlineSmall, // 小标题样式
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(vertical = 8.dp) // 上下间距
+        )
+
         Image(
             painter = painterResource(id = R.drawable.setting), // 替换为实际图片资源ID
             contentDescription = "主界面图片",
@@ -204,37 +299,47 @@ fun HelpDetail() {
 
         Text(
             text = """
-                在设置界面中，您可以控制拦截防护的范围。按照图上的指示，对希望调整的应用进行勾选，就能选择是否对他开启拦截广告服务啦~
-                不过很遗憾的是，由于Room数据库缓存设定有点奇怪，每次对应用进行修改之后，尽管实际上的防护已经开启或者关闭，需要退出页面重新进入，图形页面才会正常显示~
-            """,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // 数据分析界面标题
-        Text(
-            text = "3. 数据分析界面",
-            style = MaterialTheme.typography.headlineSmall, // 小标题样式
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(vertical = 8.dp) // 上下间距
-        )
-
-        Text(
-            text = """
-                数据分析界面会为您提供详细的统计信息，包括：
-                - 当前广告拦截数量。
-                - 各个应用中拦截的广告流量比例。
-                - 过去一段时间内的广告拦截趋势。
+                
+                在主页面点击设置进入设置页面后，可以看到如上图这些选项：
+                
+                「自动更新」应用会在后台每隔 12 小时左右检查是否有新版本并自动更新
+                
+                「后台任务隐藏」开启后，在后台任务窗口中，JoYClean 应用窗口会被隐藏。
+                
+                「是否允许提示」开启此功能以及系统设置中本软件的“允许通知”，当成功执行模拟点击操作时，会显示提示“已为您跳过广告”。
+                
+                「严格模式」如果开启， JoYClean 会完全遵循配置文件中定义的规则，因此，如果配置文件中没有定义规则的应用，就不会执行模拟点击操作；如果关闭，JoYClean 会默认搜索界面中的“跳过”关键字，如果找到，就会执行模拟点击操作。因此，即使没有在配置文件中定义规则的应用，也可以实现跳过广告的功能。但同时，也会存在误触发的情况出现。
+                
+                「自定义配置」点击可以输入自定义配置规则，支持输入纯文本的 YAML 格式或 JSON 格式，或可以返回 JSON 或 YAML 文本的 URL 链接。
+                
+                「切换主题」点击可以选择浅色主题、深色主题、跟随系统。
             """.trimIndent(),
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // 结束部分
+        val uriHandler = LocalUriHandler.current // 用于处理超链接
+
         Text(
-            text = "如果您需要更多帮助，请联系我们的支持团队。",
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(top = 16.dp)
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append("如果您需要更多帮助，请联系我们的支持团队 ")
+                }
+                pushStringAnnotation(tag = "URL", annotation = "https://github.com/chengzicong20040913/JoYClean")
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
+                    append("JYC Studio")
+                }
+                pop()
+            },
+            fontSize = 12.sp, // 设置字号
+            textAlign = TextAlign.Center, // 文本居中
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clickable {
+                    uriHandler.openUri("https://github.com/chengzicong20040913/JoYClean") // 点击打开超链接
+                },
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
