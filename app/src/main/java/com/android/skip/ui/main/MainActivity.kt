@@ -59,6 +59,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import android.util.Log
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.text.font.FontFamily
 
 
 @AndroidEntryPoint
@@ -207,6 +208,7 @@ fun AppTitle() {
         text = stringResource(id = R.string.app_name),
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
+        fontFamily = FontFamily.Cursive,  // 使用系统花体字体
         color = MaterialTheme.colorScheme.onBackground
     )
 }
