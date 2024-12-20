@@ -251,6 +251,7 @@ fun VPNButton(viewModel: MainViewModel){
     val isOn by viewModel.isOn.collectAsState()
     val elapsedSeconds by viewModel.elapsedSeconds.collectAsState()
     val context = LocalContext.current
+    val isProcessing = remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
@@ -258,7 +259,14 @@ fun VPNButton(viewModel: MainViewModel){
         ToggleCircle(
             isOn = isOn,
             onToggle = {
-                viewModel.toggleState(context = context)
+                if (!isProcessing.value) {  // 只有在没有正在处理时才触发
+                    isProcessing.value = true
+                    // 在这里使用 Thread.sleep 来阻塞主线程
+                    viewModel.toggleState(context)
+                    Thread.sleep(1000)  // 阻塞主线程 2秒
+                    // 执行状态切换
+                    isProcessing.value = false // 完成操作，恢复按钮状态
+                }
             }
         )
         if (isOn) {
