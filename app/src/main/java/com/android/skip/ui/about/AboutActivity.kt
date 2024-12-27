@@ -148,7 +148,8 @@ fun HelpDetail() {
                     append("欢迎使用 JoYClean \uD83E\uDD73")
                 }
             },
-            style = MaterialTheme.typography.headlineLarge, // 使用大标题样式
+            fontSize = 28.sp,
+            // style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             modifier = Modifier
