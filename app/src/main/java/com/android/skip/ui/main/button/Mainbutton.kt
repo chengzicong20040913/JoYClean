@@ -60,7 +60,7 @@ fun ToggleCircle(isOn: Boolean, onToggle: () -> Unit) {
                     // 使用 `transitionState` 来控制渐变的透明度或方向过渡
                     Brush.linearGradient(
                         colors = listOf(
-                            Color(0.5f, transitionState.value.coerceAtLeast(0.5f), transitionState.value.coerceAtLeast(0.5f)), // 柔和的灰色渐变
+                            Color(transitionState.value.coerceAtLeast(0.5f), 0.5f, transitionState.value.coerceAtLeast(0.5f)), // 柔和的灰色渐变
                             Color(0.5f, transitionState.value.coerceAtLeast(0.5f), transitionState.value.coerceAtLeast(0.5f)) // 更柔和的灰色
                         )
                     )
